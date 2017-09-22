@@ -7,4 +7,6 @@
 
 
     <color name="Black">#2d2d31</color>
+    <color name="second_text_color">#666666</color>
+    <color name="first_text_color">#333333</color>
 </resources>

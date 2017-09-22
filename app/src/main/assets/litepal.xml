@@ -4,7 +4,7 @@
         <dbname value="yuchuan" />
 
 
-        <version value="2" />
+        <version value="6" />
 
         <list>
             <mapping class="com.ruitong.yuchuan.yuchuansanqi.litepalbean.SupportShipBean" />

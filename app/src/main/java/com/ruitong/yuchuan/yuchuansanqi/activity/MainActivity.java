@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import com.ruitong.yuchuan.yuchuansanqi.R;
 import com.ruitong.yuchuan.yuchuansanqi.manager.GlobalManager;
 
+import org.litepal.LitePal;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LitePal.getDatabase();
         mContext = this;
         initToolbar();
 
