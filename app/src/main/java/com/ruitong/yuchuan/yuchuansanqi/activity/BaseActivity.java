@@ -37,10 +37,64 @@ public  class BaseActivity extends AppCompatActivity{
         Logger.init(TAG).logLevel(LogLevel.FULL);
 //        Logger.init(TAG).logLevel(LogLevel.NONE);
 
+      //  registerBroadcast();
     }
 
     public Context getContext() {
         return BaseActivity.this;
     }
+
+
+
+   /* *//**
+     * 广播接收器
+     *
+     * @author len
+     *//*
+    public BroadcastReceiver AisBroadcast = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String a = intent.getStringExtra("selectMMsi");
+            if (a != null) {
+                receiver(a);
+            }
+            Gpsbean gpsbean = (Gpsbean) intent.getSerializableExtra("gps");
+            if (gpsbean != null) {
+                gpsreceiver(gpsbean);
+            }
+            Jdbean jdbean = (Jdbean) intent.getSerializableExtra("pdop");
+            if (jdbean != null) {
+                hdopreceiver (jdbean);
+            }
+
+            String  toPager= intent.getStringExtra("toPager");
+            if(toPager!=null&& !TextUtils.isEmpty(toPager)){
+
+                int  isRuingBaoJing= intent.getIntExtra("isRuingBaoJing",-1);
+                if(isRuingBaoJing==1) {
+                    List<ShipBean> ls = (List<ShipBean>) intent.getSerializableExtra("baoJingShip");
+                    toPager(toPager,isRuingBaoJing,ls);
+                }else if(isRuingBaoJing==0){
+                    toPager(toPager,isRuingBaoJing,null);
+                }else{
+                    toPager(toPager,-1,null);
+                }
+
+            }
+
+        }
+    };
+    *//**
+     * 注册广播
+     *//*
+    private void registerBroadcast() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constant.Aisaction);
+
+        registerReceiver(AisBroadcast, intentFilter);// 注册接受消息广播
+
+
+    }*/
 
 }

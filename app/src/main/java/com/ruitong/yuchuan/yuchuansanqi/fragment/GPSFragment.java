@@ -2,7 +2,10 @@ package com.ruitong.yuchuan.yuchuansanqi.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -28,10 +31,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.ruitong.yuchuan.yuchuansanqi.Constant;
 import com.ruitong.yuchuan.yuchuansanqi.R;
 import com.ruitong.yuchuan.yuchuansanqi.adapter.GpsListAdapate;
-import com.ruitong.yuchuan.yuchuansanqi.bean.Jdbean;
 import com.ruitong.yuchuan.yuchuansanqi.bean.MyGpsSatellite;
+import com.ruitong.yuchuan.yuchuansanqi.gps.MyLocation;
 import com.ruitong.yuchuan.yuchuansanqi.surface.SatellitesView;
 import com.ruitong.yuchuan.yuchuansanqi.tools.PermissionUtils;
 import com.ruitong.yuchuan.yuchuansanqi.ui.HorizontalListView;
@@ -40,11 +44,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 public class GPSFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final String ACTION_GPS_BROAD = "action_gps_broad";
+    @BindView(R.id.gps_state)
+    TextView mGpsState;
+    @BindView(R.id.gps_jingdu)
+    TextView mGpsJingdu;
+    @BindView(R.id.gps_weidu)
+    TextView mGpsWeidu;
+    @BindView(R.id.gps_jingquedu)
+    TextView mGpsJingquedu;
+    Unbinder unbinder;
 
 
     public GPSFragment() {
@@ -72,10 +90,6 @@ public class GPSFragment extends Fragment {
     private HorizontalListView gpslv;
     private GpsListAdapate gpsListAdapate;
     private Runnable runnable;
-    private TextView gpsstate, pdoptv, hdoptv;
-
-    //    private static float pdop = 0;//位置精度
-//    private static float hdop = 0;//水平精度
     private String pdop = "";//位置精度
     private String hdop = "";//水平精度
     private Activity mActivity;
@@ -96,18 +110,42 @@ public class GPSFragment extends Fragment {
         mActivity = this.getActivity();
         PermissionUtils.verifyStoragePermissions((AppCompatActivity) getActivity());
         sp = mActivity.getSharedPreferences("sp", Context.MODE_PRIVATE);
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View mView = null;
-        if (mView == null && inflater != null) {
-            mView = inflater.inflate(R.layout.fragment_gps, null);
-        }
-        hdoptv = (TextView) mView.findViewById(R.id.gps_hdop);
-        pdoptv = (TextView) mView.findViewById(R.id.gps_pdop);
-        gpsstate = (TextView) mView.findViewById(R.id.gps_state);
+        View mView = inflater.inflate(R.layout.fragment_gps, container, false);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_GPS_BROAD);
+        GpsBroadcastReceiver broadcastReceiver = new GpsBroadcastReceiver();
+        getActivity().registerReceiver(broadcastReceiver, filter);
+      /*  AlxLocationManager.onCreateGPS(getActivity().getApplication());
+        final Handler handler = new Handler();
+        //每隔5s更新一下经纬度结果
+        new Timer().scheduleAtFixedRate(new TimerTask() {//每秒钟检查一下当前位置
+            @Override
+            public void run() {
+                handler.post(() -> {
+                    double latitude = MyLocation.getInstance().latitude;
+                    double longitude = MyLocation.getInstance().longitude;
+                    float accuracy = MyLocation.getInstance().accuracy;
+                    Logger.i(latitude+"");
+                    mGpsJingdu.setText(String.valueOf(latitude));
+                    mGpsWeidu.setText(String.valueOf(longitude));
+                    mGpsJingquedu.setText(String.valueOf(accuracy));
+                   *//* if (latitude != 0 && accuracy != 0) {
+                        juDgeState(2);
+                    } else {
+                        juDgeState(1);
+                    }*//*
+                });
+            }
+        }, 0, 5000);*/
+
         bg = BitmapFactory.decodeResource(getResources(),
                 R.drawable.compass1);
         spots = BitmapFactory.decodeResource(getResources(),
@@ -132,14 +170,27 @@ public class GPSFragment extends Fragment {
             gpslv.setAdapter(gpsListAdapate);
             startPush();
         }
-        int i = sp.getInt("sfdw", 1);
-        juDgeState(i);
 
+        unbinder = ButterKnife.bind(this, mView);
         return mView;
     }
 
     public Handler handler = new Handler();
+    /**
+     * 定义广播接收器（内部类）
+     *
+     * @author lenovo
+     *
+     */
+    private class GpsBroadcastReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MyLocation myLocation = (MyLocation) intent.getSerializableExtra(Constant.MYLOCATION);
+            Logger.i(myLocation.toString());
+        }
+
+    }
 
     /**
      * 注册监听
@@ -272,6 +323,7 @@ public class GPSFragment extends Fragment {
                 }
                 case GpsStatus.GPS_EVENT_SATELLITE_STATUS: {// 周期的报告卫星状态
                     // 得到所有收到的卫星的信息，包括 卫星的高度角、方位角、信噪比、和伪随机号（及卫星编号）
+
                     if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
@@ -360,14 +412,14 @@ public class GPSFragment extends Fragment {
         mActivity.runOnUiThread(() -> {
             switch (flag) {
                 case 1:
-                    gpsstate.setText("未定位");
-                    gpsstate.setTextColor(Color.RED);
+                    mGpsState.setText("未定位");
+                    mGpsState.setTextColor(Color.RED);
                     gpsList.clear();
                     gpsListAdapate.notifyDataSetChanged();
                     break;
                 case 2:
-                    gpsstate.setText("定位");
-                    gpsstate.setTextColor(Color.GREEN);
+                    mGpsState.setText("定位");
+                    mGpsState.setTextColor(Color.GREEN);
 
                     break;
             }
@@ -376,7 +428,7 @@ public class GPSFragment extends Fragment {
 
     List<Integer> sateLiteIntList = new ArrayList<>();
 
-    public void getgpsjd(Jdbean jdbean) {
+/*    public void getgpsjd(Jdbean jdbean) {
         if (jdbean != null) {
             if (jdbean.getPdop() != null && jdbean.getHdop() != null) {
                 pdop = jdbean.getPdop();
@@ -393,10 +445,13 @@ public class GPSFragment extends Fragment {
             } else if (jdbean.getSfdw().equals("1")) {
                 pdoptv.setText("0.0");
                 hdoptv.setText("0.0");
-
             }
-
         }
-    }
+    }*/
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }

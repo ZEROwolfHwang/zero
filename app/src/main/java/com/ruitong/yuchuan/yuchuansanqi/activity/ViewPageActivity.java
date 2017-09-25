@@ -1,20 +1,24 @@
 package com.ruitong.yuchuan.yuchuansanqi.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.ruitong.yuchuan.yuchuansanqi.Constant;
 import com.ruitong.yuchuan.yuchuansanqi.R;
 import com.ruitong.yuchuan.yuchuansanqi.adapter.FourViewPagerAdapter;
 import com.ruitong.yuchuan.yuchuansanqi.manager.GlobalManager;
+import com.ruitong.yuchuan.yuchuansanqi.sevicy.MyDataService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ViewPageActivity extends AppCompatActivity {
+public class ViewPageActivity extends BaseActivity {
 
     //    public static final int RESULT_DETAIL = 001;
     private static String ARG_LITE_ID = "arg_lite_id";
@@ -30,6 +34,7 @@ public class ViewPageActivity extends AppCompatActivity {
     private Context mContext;
     private String mType;
     private FourViewPagerAdapter mPagerAdapter;
+    private AisBroadcast mAisBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,14 @@ public class ViewPageActivity extends AppCompatActivity {
         getIntentData();
 
         initViewPagerAndTabs();
+        // 动态注册广播
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constant.Aisaction);
+        mAisBroadcast = new AisBroadcast();
+        registerReceiver(mAisBroadcast, filter);
+
+        Intent intent = new Intent(this, MyDataService.class);
+        startService(intent);
     }
 
 
@@ -81,5 +94,24 @@ public class ViewPageActivity extends AppCompatActivity {
     private void getIntentData() {
         Intent intent = getIntent();
         mType = intent.getType();
+    }
+    /**
+     * 定义广播接收器（内部类）
+     *
+     * @author lenovo
+     *
+     */
+    private class AisBroadcast extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 注销广播
+        unregisterReceiver(mAisBroadcast);
     }
 }

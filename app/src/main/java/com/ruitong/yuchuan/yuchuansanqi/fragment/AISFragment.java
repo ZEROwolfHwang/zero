@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.orhanobut.logger.Logger;
 import com.ruitong.yuchuan.yuchuansanqi.R;
 import com.ruitong.yuchuan.yuchuansanqi.activity.AISItemPageActivity;
 import com.ruitong.yuchuan.yuchuansanqi.adapter.BaseAdapter;
@@ -117,10 +116,10 @@ public class AISFragment extends Fragment {
                 TextView ais_item_2 = holder.getView(R.id.ais_item_2);
                 TextView ais_item_3 = holder.getView(R.id.ais_item_3);
                 TextView ais_item_4 = holder.getView(R.id.ais_item_4);
-                Logger.i(supportShipBean.getAISList_1());
-                Logger.i(supportShipBean.getAISList_2());
-                Logger.i(supportShipBean.getAISList_3());
-                Logger.i(supportShipBean.getAISList_4());
+//                Logger.i(supportShipBean.getAISList_1());
+//                Logger.i(supportShipBean.getAISList_2());
+//                Logger.i(supportShipBean.getAISList_3());
+//                Logger.i(supportShipBean.getAISList_4());
                 ais_item_1.setText(supportShipBean.getAISList_1());
                 ais_item_2.setText(supportShipBean.getAISList_2());
                 ais_item_3.setText(supportShipBean.getAISList_3());

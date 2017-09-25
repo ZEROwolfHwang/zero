@@ -4,122 +4,139 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="#b1b1ca"
+        android:orientation="vertical">
+
+        <com.ruitong.yuchuan.yuchuansanqi.surface.SatellitesView
+            android:id="@+id/satellitesView"
+            android:layout_marginTop="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_width="160dp"
+            android:orientation="vertical"
+            android:gravity="right"
+            android:layout_alignParentRight="true"
+            android:layout_height="120dp">
 
-            <TextView
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="状态:"
-                android:textColor="@color/Black"
-                android:textSize="23sp" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/gps_state"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="状 态:"
+                    android:textColor="@color/second_text_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/gps_state"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/first_text_color"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/second_text_color"
-                android:textSize="30sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="经 度:"
+                    android:textColor="@color/second_text_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/gps_jingdu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/first_text_color"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="纬 度:"
+                    android:textColor="@color/second_text_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/gps_weidu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/first_text_color"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="精确度:"
+                    android:textColor="@color/second_text_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/gps_jingquedu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/first_text_color"
+                    android:textSize="20sp"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/second_text_color" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+    </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="水平精度:"
-                android:textColor="@color/Black"
-                android:textSize="23sp" />
-
-            <TextView
-                android:id="@+id/gps_hdop"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="0.0"
-                android:textColor="@color/Black"
-                android:textSize="30sp" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/second_text_color" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="位置精度："
-                android:textColor="@color/Black"
-                android:textSize="23sp" />
-
-            <TextView
-                android:id="@+id/gps_pdop"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="0.0"
-                android:textColor="@color/Black"
-                android:textSize="30sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/second_text_color" />
-
-    <com.ruitong.yuchuan.yuchuansanqi.surface.SatellitesView
-        android:id="@+id/satellitesView"
-        android:layout_width="match_parent"
-        android:layout_height="380dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/second_text_color" />
+    <include layout="@layout/device_item_bg_1dp"/>
 
     <com.ruitong.yuchuan.yuchuansanqi.ui.HorizontalListView
         android:id="@+id/gps_lv"
-        android:layout_gravity="center"
-
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
 
     </com.ruitong.yuchuan.yuchuansanqi.ui.HorizontalListView>
-
 </LinearLayout>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.yisipu.chartmap.ui.VerticalProgressBar
+    <com.ruitong.yuchuan.yuchuansanqi.ui.VerticalProgressBar
         android:layout_marginTop="10dip"
         android:layout_gravity="center_horizontal"
         android:id="@+id/pb_progressbar"
@@ -18,7 +18,7 @@
         android:progressDrawable="@drawable/progressbar"
         >
 
-    </com.yisipu.chartmap.ui.VerticalProgressBar>
+    </com.ruitong.yuchuan.yuchuansanqi.ui.VerticalProgressBar>
 
     <TextView
         android:layout_width="60dip"
