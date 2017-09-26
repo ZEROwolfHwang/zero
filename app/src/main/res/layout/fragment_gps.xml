@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:background="#b1b1ca"
         android:orientation="vertical">
 
         <com.ruitong.yuchuan.yuchuansanqi.surface.SatellitesView

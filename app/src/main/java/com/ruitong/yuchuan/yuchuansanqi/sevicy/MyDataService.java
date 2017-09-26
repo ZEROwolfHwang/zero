@@ -41,7 +41,7 @@ public class MyDataService extends Service {
         mNmeaListener = (timestamp, nmea) -> {
             String path = Environment.getExternalStorageDirectory().getPath();
             String gpsPath = path + "/" + "gps.txt";
-            Logger.i(gpsPath);
+//            Logger.i(gpsPath);
 
             new Thread(() -> {
                 try {

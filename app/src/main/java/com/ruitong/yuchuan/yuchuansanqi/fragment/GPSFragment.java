@@ -63,6 +63,7 @@ public class GPSFragment extends Fragment {
     @BindView(R.id.gps_jingquedu)
     TextView mGpsJingquedu;
     Unbinder unbinder;
+    private GpsBroadcastReceiver mGpsReceiver;
 
 
     public GPSFragment() {
@@ -121,30 +122,8 @@ public class GPSFragment extends Fragment {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_GPS_BROAD);
-        GpsBroadcastReceiver broadcastReceiver = new GpsBroadcastReceiver();
-        getActivity().registerReceiver(broadcastReceiver, filter);
-      /*  AlxLocationManager.onCreateGPS(getActivity().getApplication());
-        final Handler handler = new Handler();
-        //每隔5s更新一下经纬度结果
-        new Timer().scheduleAtFixedRate(new TimerTask() {//每秒钟检查一下当前位置
-            @Override
-            public void run() {
-                handler.post(() -> {
-                    double latitude = MyLocation.getInstance().latitude;
-                    double longitude = MyLocation.getInstance().longitude;
-                    float accuracy = MyLocation.getInstance().accuracy;
-                    Logger.i(latitude+"");
-                    mGpsJingdu.setText(String.valueOf(latitude));
-                    mGpsWeidu.setText(String.valueOf(longitude));
-                    mGpsJingquedu.setText(String.valueOf(accuracy));
-                   *//* if (latitude != 0 && accuracy != 0) {
-                        juDgeState(2);
-                    } else {
-                        juDgeState(1);
-                    }*//*
-                });
-            }
-        }, 0, 5000);*/
+        mGpsReceiver = new GpsBroadcastReceiver();
+        getActivity().registerReceiver(mGpsReceiver, filter);
 
         bg = BitmapFactory.decodeResource(getResources(),
                 R.drawable.compass1);
@@ -176,18 +155,39 @@ public class GPSFragment extends Fragment {
     }
 
     public Handler handler = new Handler();
+
     /**
      * 定义广播接收器（内部类）
      *
      * @author lenovo
-     *
      */
     private class GpsBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            MyLocation myLocation = (MyLocation) intent.getSerializableExtra(Constant.MYLOCATION);
-            Logger.i(myLocation.toString());
+            /*new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    MyLocation myLocation = (MyLocation) intent.getSerializableExtra(Constant.MYLOCATION);
+                    Logger.i(myLocation.toString());
+                }
+            }, 0, 5000);*/
+            new Thread(() -> {
+                MyLocation myLocation = (MyLocation) intent.getSerializableExtra(Constant.MYLOCATION);
+                Logger.i(myLocation.toString());
+                getActivity().runOnUiThread(() -> {
+                    mGpsJingdu.setText(myLocation.latitude + "");
+                    mGpsWeidu.setText(myLocation.longitude + "");
+                    mGpsJingquedu.setText(myLocation.accuracy + "");
+                    if (myLocation != null) {
+                        mGpsState.setText("定位");
+                        mGpsState.setTextColor(Color.DKGRAY);
+                    } else {
+                        mGpsState.setText("未定位");
+                        mGpsState.setTextColor(Color.RED);
+                    }
+                });
+            }).start();
         }
 
     }
@@ -404,7 +404,9 @@ public class GPSFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        getActivity().unregisterReceiver(mGpsReceiver);
         unregisterListener();
+
         super.onDestroy();
     }
 
@@ -412,15 +414,10 @@ public class GPSFragment extends Fragment {
         mActivity.runOnUiThread(() -> {
             switch (flag) {
                 case 1:
-                    mGpsState.setText("未定位");
-                    mGpsState.setTextColor(Color.RED);
                     gpsList.clear();
                     gpsListAdapate.notifyDataSetChanged();
                     break;
                 case 2:
-                    mGpsState.setText("定位");
-                    mGpsState.setTextColor(Color.GREEN);
-
                     break;
             }
         });

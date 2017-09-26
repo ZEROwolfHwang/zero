@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.orhanobut.logger.Logger;
 import com.ruitong.yuchuan.yuchuansanqi.Constant;
 import com.ruitong.yuchuan.yuchuansanqi.fragment.GPSFragment;
 
@@ -351,6 +352,8 @@ public class AlxLocationManager implements GoogleApiClient.ConnectionCallbacks, 
             Intent intent = new Intent();
             intent.setAction(GPSFragment.ACTION_GPS_BROAD);
             intent.putExtra(Constant.MYLOCATION, myLocationStatic);
+            Logger.i(myLocationStatic.toString());
+
             sContext.sendBroadcast(intent);
 
             Log.i("123",myLocationStatic.toString());

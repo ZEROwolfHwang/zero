@@ -1,6 +1,9 @@
 package com.ruitong.yuchuan.yuchuansanqi.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -13,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.ruitong.yuchuan.yuchuansanqi.Constant;
 import com.ruitong.yuchuan.yuchuansanqi.R;
 import com.ruitong.yuchuan.yuchuansanqi.gps.AlxLocationManager;
 import com.ruitong.yuchuan.yuchuansanqi.gps.MyLocation;
@@ -21,13 +25,10 @@ import com.ruitong.yuchuan.yuchuansanqi.tools.PermissionUtils;
 
 import org.litepal.LitePal;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.ruitong.yuchuan.yuchuansanqi.fragment.GPSFragment.ACTION_GPS_BROAD;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.main_hangxiang)
     TextView mMainHangxiang;
     private Context mContext;
+    private GpsBroadcastReceiver mGpsReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +53,14 @@ public class MainActivity extends AppCompatActivity
         //开启位置监听
         AlxLocationManager.onCreateGPS(getApplication());
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_GPS_BROAD);
+        mGpsReceiver = new GpsBroadcastReceiver();
+      registerReceiver(mGpsReceiver, filter);
+
         final Handler handler = new Handler();
         //每隔2s更新一下经纬度结果
-        new Timer().scheduleAtFixedRate(new TimerTask() {//每秒钟检查一下当前位置
+      /*  new Timer().scheduleAtFixedRate(new TimerTask() {//每5秒钟检查一下当前位置
             @Override
             public void run() {
                 handler.post(() -> {
@@ -64,13 +71,47 @@ public class MainActivity extends AppCompatActivity
                         Logger.i(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(MyLocation.getInstance().updateTime)));
                 });
             }
-        }, 0, 5000);
+        }, 0, 5000);*/
         LitePal.getDatabase();
         mContext = this;
         initToolbar();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    /**
+     * 定义广播接收器（内部类）
+     *
+     * @author lenovo
+     */
+    private class GpsBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            /*new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    MyLocation myLocation = (MyLocation) intent.getSerializableExtra(Constant.MYLOCATION);
+                    Logger.i(myLocation.toString());
+                }
+            }, 0, 5000);*/
+            new Thread(() -> {
+                MyLocation myLocation = (MyLocation) intent.getSerializableExtra(Constant.MYLOCATION);
+                Logger.i(myLocation.toString());
+                runOnUiThread(() -> {
+                    mMainJingdu.setText(myLocation.latitude + "");
+                    mMainWeidu.setText(myLocation.longitude + "");
+                    mMainHangsu.setText(myLocation.speed+"");
+                });
+            }).start();
+        }
+
+    }
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -133,6 +174,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        AlxLocationManager.stopGPS();
+//        AlxLocationManager.stopGPS();
     }
 }
